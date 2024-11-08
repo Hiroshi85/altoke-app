@@ -9,19 +9,9 @@ import { useRegister } from './context';
 import { useEffect } from 'react';
 
 export default function InitRegister() {
-
-    useEffect(() => {
-        console.log('InitRegister')
-        fetch('https://jsonplaceholder.typicode.com/users')
-        .then(response => response.json())
-        .then(json => console.log(json))
-    }, [])
-
-
-
+    
     return (
             <View style={{
-                // flex: 1,
                 height: '100%',
                 justifyContent: 'center',
                 paddingHorizontal: 20,
@@ -38,7 +28,7 @@ function FormNegocio() {
 
     const form = useForm<negocioSchemaType>({
         resolver: zodResolver(negocioSchema),
-        defaultValues: {
+        defaultValues: fatherForm.getValues('negocio') || {
             nombre: "",
             lugar: ""
         }
