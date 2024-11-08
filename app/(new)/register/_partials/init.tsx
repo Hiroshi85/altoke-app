@@ -5,8 +5,20 @@ import { Button, Text, TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/forms';
+import { useRegister } from './context';
+import { useEffect } from 'react';
 
 export default function InitRegister() {
+
+    useEffect(() => {
+        console.log('InitRegister')
+        fetch('https://jsonplaceholder.typicode.com/users')
+        .then(response => response.json())
+        .then(json => console.log(json))
+    }, [])
+
+
+
     return (
             <View style={{
                 // flex: 1,
@@ -22,6 +34,8 @@ export default function InitRegister() {
 }
 
 function FormNegocio() {
+    const {form: fatherForm, setStep} = useRegister()
+
     const form = useForm<negocioSchemaType>({
         resolver: zodResolver(negocioSchema),
         defaultValues: {
@@ -31,7 +45,8 @@ function FormNegocio() {
     })
 
     function handleSubmit() {
-        console.log("submit")
+        fatherForm.setValue('negocio', form.getValues())
+        setStep('sector')
     }
 
     return (

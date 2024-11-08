@@ -9,7 +9,8 @@ export type negocioSchemaType = z.infer<typeof negocioSchema>
 
 
 export const registerSchema = z.object({
-  negocio: negocioSchema
+  negocio: negocioSchema,
+  sector: z.string()
 })
 
 export type registerSchemaType = z.infer<typeof registerSchema>
