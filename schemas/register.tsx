@@ -13,9 +13,16 @@ export const sectorSchema = z.object({
 
 export type sectorSchemaType = z.infer<typeof sectorSchema>
 
+export const tipoSchema = z.object({
+  nombre: z.string()
+})
+
+export type tipoSchemaType = z.infer<typeof tipoSchema>
+
 export const registerSchema = z.object({
   negocio: negocioSchema,
-  sector: sectorSchema
+  sector: sectorSchema,
+  tipo: tipoSchema
 })
 
 export type registerSchemaType = z.infer<typeof registerSchema>

@@ -60,15 +60,18 @@ const sectores: ISectorItemProps[] = [
 
 function FormSector() {
 
+  const {setStep, form: fatherForm} = useRegister()
+
   const form = useForm<sectorSchemaType>({
     resolver: zodResolver(sectorSchema),
-    defaultValues: {
+    defaultValues: fatherForm.getValues('sector') || {
       nombre: ''
     }
   })
 
-  function handleSubmit() {
-    console.log(form.getValues())
+  function handleSubmit(data: sectorSchemaType) {
+    fatherForm.setValue('sector', form.getValues())
+    setStep("tipo")
   }
 
   return (
@@ -100,7 +103,7 @@ function FormSector() {
             </FormItem>
           )}
         />
-        <Button onPress={() => handleSubmit()} mode='outlined'>
+        <Button onPress={form.handleSubmit(handleSubmit)} mode='outlined'>
           Siguiente
         </Button>
       </View>

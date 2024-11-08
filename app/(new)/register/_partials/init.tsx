@@ -34,7 +34,7 @@ function FormNegocio() {
         }
     })
 
-    function handleSubmit() {
+    function handleSubmit(data: negocioSchemaType) {
         fatherForm.setValue('negocio', form.getValues())
         setStep('sector')
     }
@@ -88,7 +88,7 @@ function FormNegocio() {
                         </FormItem>
                     )}
                 />
-                <Button onPress={() => handleSubmit()} mode='outlined'>
+                <Button onPress={form.handleSubmit(handleSubmit)} mode='outlined'>
                     Siguiente
                 </Button>
             </View>

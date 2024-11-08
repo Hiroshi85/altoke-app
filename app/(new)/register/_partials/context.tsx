@@ -4,6 +4,7 @@ import { SectorStep } from "./sector/sector";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { registerSchema, registerSchemaType } from "@/schemas/register";
 import { zodResolver } from "@hookform/resolvers/zod";
+import TipoStep from "./tipo";
 
 interface RegisterContextProps {
   step: Step;
@@ -22,7 +23,12 @@ const steps = {
   "sector": {
     component: SectorStep,
     key: "sector",
-    next: "init"
+    next: "tipo"
+  },
+  "tipo": {
+    component: TipoStep,
+    key: "tipo",
+    next: "finish"
   }
 }
 
