@@ -1,14 +1,29 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Slot, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import AuthProvider from '@/providers/auth';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { PaperProvider } from 'react-native-paper';
+import { ThemeProp } from 'react-native-paper/lib/typescript/types';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+const theme: ThemeProp = {
+  ...DefaultTheme,
+  //   myOwnProperty: true,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#000",
+    background: "#fff",
+  },
+};
+
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -27,11 +42,12 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <AuthProvider>
+      <GestureHandlerRootView>
+        <PaperProvider theme={theme}>
+          <Slot />
+        </PaperProvider>
+      </GestureHandlerRootView>
+    </AuthProvider>
   );
 }
