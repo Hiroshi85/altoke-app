@@ -6,7 +6,7 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useAuth } from '@/providers/auth';
 
-import {Text } from "react-native-paper"
+import { Text } from "react-native-paper"
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -22,6 +22,10 @@ export default function TabLayout() {
     // On web, static rendering will stop here as the user is not authenticated
     // in the headless Node process that the pages are rendered in.
     return <Redirect href="/login" />;
+  }
+
+  if (authData['auth-status'] == "NEW") {
+    return <Redirect href="/register" />;
   }
 
   return (
