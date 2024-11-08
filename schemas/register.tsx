@@ -3,6 +3,10 @@ import { z } from "zod";
 export const negocioSchema = z.object({
   nombre: z.string(),
   lugar: z.string(),
+  coordenadas: z.object({
+    lat: z.number(),
+    lng: z.number()
+  }),
 })
 
 export type negocioSchemaType = z.infer<typeof negocioSchema>
