@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "184776498333",
+    "project_id": "altoke-app-bbe75",
+    "storage_bucket": "altoke-app-bbe75.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184776498333:android:398005c94bdb08d43d4874",
+        "android_client_info": {
+          "package_name": "com.hiroshi85.altokeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGJRHiDLUi1f8O8ZbulL2AhVZKt5hSrJQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
