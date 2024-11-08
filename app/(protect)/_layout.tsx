@@ -24,7 +24,8 @@ export default function TabLayout() {
     return <Redirect href="/login" />;
   }
 
-  if (authData['auth-status'] == "NEW") {
+  //Pantalla de inicio: NEW
+  if (authData['auth-status'] == "REGISTERED") {
     return <Redirect href="/register" />;
   }
 
