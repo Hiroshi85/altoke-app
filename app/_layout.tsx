@@ -19,8 +19,6 @@ const theme: ThemeProp = {
   //   myOwnProperty: true,
   colors: {
     ...DefaultTheme.colors,
-    primary: "#000",
-    background: "#fff",
   },
 };
 

@@ -5,28 +5,11 @@ import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useAuth } from '@/providers/auth';
-import {
-  Pressable,
-  Text,
-  Image,
-  View,
-  DrawerLayoutAndroid,
-} from "react-native";
+
+import {Text } from "react-native-paper"
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { authData, loading, signOut } = useAuth();
-
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
-
-
-  if (!authData) {
-    // On web, static rendering will stop here as the user is not authenticated
-    // in the headless Node process that the pages are rendered in.
-    return <Redirect href="/login" />;
-  }
 
   return (
     <Tabs
@@ -49,6 +32,15 @@ export default function TabLayout() {
           title: 'Explore',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="user"
+        options={{
+          title: 'Usuario',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'body' : 'body-outline'} color={color} />
           ),
         }}
       />

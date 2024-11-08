@@ -17,7 +17,7 @@ export type AuthContextData = {
 };
 
 export interface LoginResponse {
-    id: number;
+    id: string;
     username: string;
     first_name: string;
     last_name: string;
@@ -60,23 +60,25 @@ export default function AuthProvider({
 
     const signIn = async (): Promise<AuthStatusResponse> => {
 
-      const dataUser = {
-          id: 1,
-          token: "123",
-          email: "someone@gmail.com",
-          // name: "John Doe",
-          name: "Juan Perez"
+        // Simulates data from firebase
+        const dataUser: UserData = {
+            id: "abcd",
+            telefono: "987654321",
+            // name: "John Doe",
+            nombre: "Test User",
+            "auth-status": "NEW",
         }
-      
+
         setAuthData(dataUser);
         await setStorageItemAsync("auth", JSON.stringify(dataUser));
 
-        // if (data.CODE === "NOT_REGISTERED") {
-        //     return {
-        //         ok: true,
-        //         redirect: "/register",
-        //     };
-        // }
+
+        if (dataUser["auth-status"] === "NEW") {
+            return {
+                ok: true,
+                redirect: "/register",
+            };
+        }
 
         return {
             ok: true,

@@ -1,6 +1,6 @@
 export type UserData = {
-    id: number;
-    token: string;
-    email: string;
-    name: string;
+    id: string;
+    telefono:string;
+    nombre: string;
+    "auth-status": "NEW" | "REGISTERED";
 }
