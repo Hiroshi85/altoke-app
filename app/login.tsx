@@ -42,18 +42,19 @@ export default function SignIn() {
       
       <View
         style={{
-          flex: 1,
+          // flex: 1,
           // marginTop: 400,
-          height: "100%",
+          // height: "100%",
           justifyContent: "center",
-          alignItems: "center",
           paddingHorizontal: 40,
           position: "relative",
           backgroundColor: colors.background,
         }}
       >
         <View style={{
-          marginTop: 500,
+          // marginTop: 500,
+          height: "100%",
+          justifyContent: "center",
         }}>
           <Text
             variant="headlineLarge"
