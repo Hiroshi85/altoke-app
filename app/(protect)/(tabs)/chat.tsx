@@ -1,6 +1,6 @@
-import { StyleSheet, Image, Platform, View, FlatList } from 'react-native';
+import { TextInput as TextInputReact, StyleSheet, Image, Platform, View, FlatList } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
-import { Appbar, Button, Card, Paragraph, Text, TextInput, useTheme } from 'react-native-paper';
+import { Appbar, Button, Card, IconButton, Paragraph, Text, TextInput, useTheme } from 'react-native-paper';
 import { model, quitarEstiloMarkdown } from '@/utils/gemini';
 import Markdown from 'react-native-markdown-display';
 
@@ -163,22 +163,33 @@ export default function TabTwoScreen() {
       />
 
       <View style={styles.inputContainer}>
-        <TextInput
-          mode="outlined"
+        <TextInputReact
+          // mode="outlined"
           placeholder="Escribe un mensaje"
           value={message}
           onChangeText={(text) => setMessage(text)}
-          style={styles.input}
+          style={[ styles.input, {
+            backgroundColor: "#e0e0e0",
+            padding: 10,
+            borderRadius: 1000,
+          }
+          ]}
           editable={!isWaitingForResponse} // Deshabilitar cuando se espera respuesta
         />
-        <Button
+        <IconButton 
+        icon="send" 
+        mode='contained'
+        onPress={sendMessage} 
+        disabled={isWaitingForResponse || message.trim() === ''} 
+        />
+        {/* <Button
           mode="contained"
           onPress={sendMessage}
           style={styles.sendButton}
           disabled={isWaitingForResponse || message.trim() === ''} // Deshabilitar si estamos esperando o el campo está vacío
         >
           Enviar
-        </Button>
+        </Button> */}
       </View>
     </View>
   );
