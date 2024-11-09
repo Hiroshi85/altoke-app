@@ -2,6 +2,7 @@ import { StyleSheet, Image, Platform, View, FlatList } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Appbar, Button, Card, Text, TextInput } from 'react-native-paper';
 import { model, quitarEstiloMarkdown } from '@/utils/gemini';
+import Markdown from 'react-native-markdown-display';
 
 interface Message {
   id: number;
@@ -106,9 +107,7 @@ export default function TabTwoScreen() {
     <Card
       style={[styles.messageCard, item.isUser ? styles.userMessage : styles.botMessage]}
     >
-      <Text >{item.text}</Text>
-      
-      
+      <Markdown>{item.text}</Markdown>
     </Card>
   );
 
