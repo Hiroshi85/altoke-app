@@ -133,8 +133,8 @@ export const DAILY_SURVEY_QUESTIONS: SurveyQuestion[] = [
     type: "radio",
     question: "¿Has notado nuevas empresas o competencia en tu zona?",
     options: [
-      { label: "Sí", value: 0 },
-      { label: "No", value: 1 },
+      { label: "Sí", value: "SI" },
+      { label: "No", value: "NO" },
     ],
   },
 ];
