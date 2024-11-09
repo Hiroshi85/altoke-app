@@ -16,6 +16,8 @@ import { useSurvey } from "./context";
 import { Controller } from "react-hook-form";
 import { SurveySchemaType } from "@/schemas/survey";
 import { Form, FormField, FormItem } from "@/components/ui/forms";
+import firestore from "@react-native-firebase/firestore";
+import { useAuth } from "@/providers/auth";
 
 export const getRadioButtonColor = (value: number) => {
   switch (value) {
@@ -35,6 +37,7 @@ export const getRadioButtonColor = (value: number) => {
 };
 
 export default function Survey() {
+  const { authData } = useAuth();
   const [page, setPage] = useState(0);
   const totalQuestions = DAILY_SURVEY_QUESTIONS.length;
   const totalPages = Math.ceil(totalQuestions / 2);
@@ -59,24 +62,50 @@ export default function Survey() {
   const { form, setStep } = useSurvey();
 
   const watchFields = form.watch();
-  const answeredQuestions = Object.values(watchFields).filter(value => value !== undefined && value !== "").length;
+  const answeredQuestions = Object.values(watchFields).filter(
+    (value) => value !== undefined && value !== ""
+  ).length;
   const progress = (answeredQuestions - 1) / totalQuestions; //restar fecha
 
-  function handleSubmit(data: SurveySchemaType) {
+  async function handleSubmit(data: SurveySchemaType) {
     console.log("Form data", data);
-    if (progress !== 1){
-      return; 
+    if (progress !== 1 || !authData) {
+      return;
     }
-    setStep("results");
+    // get emprendimiento by user id from firestore
+    try {
+      // get emprendimiento by user id from firestore
+      const userDoc = await firestore().collection("users").doc(authData.id).get();
+      const emprendimientoQuery = await firestore()
+        .collection("emprendimiento")
+        .where("userID", "==", userDoc.ref)
+        .get();
+
+      if (!emprendimientoQuery.empty) {
+        const emprendimientoDoc = emprendimientoQuery.docs[0];
+        const dataEmprendimiento = emprendimientoDoc.data();
+        console.log("DATA EMPRENDIMIENTO", dataEmprendimiento);
+
+        const metaVentaInicial = dataEmprendimiento["meta-venta-inicial"];
+        await firestore().collection("monitoreo-diario").add({
+          emprendimientoId: emprendimientoDoc.id,
+          "meta-venta": metaVentaInicial,
+          ...data
+        });
+        setStep("results");
+      } else {
+        console.log("No such document!");
+      }
+    } catch (error) {
+      console.error("Error getting document:", error);
+    }
   }
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <View>
         <ThemedText type="title">Encuesta diaria</ThemedText>
-        <ProgressBar
-          progress={progress}
-        />
+        <ProgressBar progress={progress} />
       </View>
       <Form {...form}>
         <FlatList
@@ -106,7 +135,9 @@ export default function Survey() {
                           />
                           <View style={styles.radioLabel}>
                             <Text>{option.label}</Text>
-                            <ThemedText type="link">{option.summary}</ThemedText>
+                            <ThemedText type="link">
+                              {option.summary}
+                            </ThemedText>
                           </View>
                         </FormItem>
                       )}
