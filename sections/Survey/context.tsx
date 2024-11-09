@@ -17,13 +17,13 @@ const steps = {
   },
   questions: {
     component: Survey,
-    key: "sector",
+    key: "questions",
     next: "results",
   },
   results: {
     component: SurveyCompleted,
-    key: "tipo",
-    next: "finish",
+    key: "results",
+    next: "results",
   },
 };
 interface SurveyContextProps {

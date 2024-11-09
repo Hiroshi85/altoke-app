@@ -33,11 +33,19 @@ export const DAILY_SURVEY_QUESTIONS: SurveyQuestion[] = [
     key: "comparacionVenta",
     question: "¿Cómo se comparan tus ventas hoy con las de la semana pasada?",
     options: [
-      { label: "Mucho mejor", summary: "Aumento significativo en ventas", value: 5 },
+      {
+        label: "Mucho mejor",
+        summary: "Aumento significativo en ventas",
+        value: 5,
+      },
       { label: "Mejor", summary: "Aumento en ventas", value: 4 },
       { label: "Igual", summary: "Sin cambios", value: 3 },
       { label: "Peor", summary: "Disminución en ventas", value: 2 },
-      { label: "Mucho peor", summary: "Disminución significativa en ventas", value: 1 },
+      {
+        label: "Mucho peor",
+        summary: "Disminución significativa en ventas",
+        value: 1,
+      },
     ],
   },
   {
@@ -46,11 +54,11 @@ export const DAILY_SURVEY_QUESTIONS: SurveyQuestion[] = [
     key: "capacidadGastoClientes",
     question: "¿Cómo percibes la capacidad de gasto de tus clientes hoy?",
     options: [
-      { label: "Muy alta", summary: "75 a < 100 %", value: 5 },
-      { label: "Alta", summary: "50 a < 75 %", value: 4 },
-      { label: "Media", summary: "25 a < 50 %", value: 3 },
-      { label: "Baja", summary: "10 a < 25 %", value: 2 },
-      { label: "Muy baja", summary: "0 a < 10 %", value: 1 },
+      { summary: "Muy alta", label: "75 a < 100 %", value: 5 },
+      { summary: "Alta", label: "50 a < 75 %", value: 4 },
+      { summary: "Media", label: "25 a < 50 %", value: 3 },
+      { summary: "Baja", label: "10 a < 25 %", value: 2 },
+      { summary: "Muy baja", label: "0 a < 10 %", value: 1 },
     ],
   },
   {

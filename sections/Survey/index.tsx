@@ -9,7 +9,13 @@ import {
   TextInput,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { DAILY_SURVEY_QUESTIONS } from "@/constants/Survey/questions";
 import { useSurvey } from "./context";
 import { Controller, useForm } from "react-hook-form";
@@ -74,8 +80,8 @@ export default function Survey() {
   });
 
   function handleSubmit(data: SurveySchemaType) {
-    console.log(data)
-}
+    console.log(data);
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -83,19 +89,19 @@ export default function Survey() {
         <ThemedText type="title">Monitoreo diario</ThemedText>
         <ProgressBar progress={12} />
       </View>
-      <View style={styles.content}>
+      <ScrollView style={styles.content}>
         <Form {...form}>
           {DAILY_SURVEY_QUESTIONS.slice(page * 2, page * 2 + 2).map(
             (question) => (
               <View key={question.id}>
                 <Text>{question.question}</Text>
-                {question.options.map((option) => (
-                  <View key={option.label} style={styles.radioInput}>
-                    <FormField
-                      control={form.control}
-                      name={question.key as keyof SurveySchemaType}
-                      render={({ field }) =>
-                        question.type === "radio" ? (
+                {question.type == "radio" ? (
+                  question.options.map((option) => (
+                    <View key={option.label} style={styles.radioInput}>
+                      <FormField
+                        control={form.control}
+                        name={question.key as keyof SurveySchemaType}
+                        render={({ field }) => (
                           <FormItem style={styles.radioInput}>
                             <RadioButton.Android
                               color={getRadioButtonColor(
@@ -109,92 +115,103 @@ export default function Survey() {
                               }
                               onPress={() => field.onChange(option.value)}
                             />
-                            <Text>{option.label}</Text>
+                            <View style={styles.radioLabel}>
+                              <Text>{option.label}</Text>
+                              <Text>{option.summary}</Text>
+                            </View>
                           </FormItem>
-                        ) : question.type === "select" ? (
-                          <Controller
-                            control={form.control}
-                            name={question.key as keyof SurveySchemaType}
-                            render={({
-                              field: { onChange, value },
-                              fieldState: { error },
-                            }) => (
-                              <View>
-                                <TextInput
-                                  label={question.question}
-                                  mode="outlined"
-                                  value={value as string}
-                                  onChangeText={(text) => {
-                                    onChange(text);
-                                    // fetchSuggestions(text); // solo filtrar options de la lista de sugerencias
-                                  }}
-                                  error={!!error}
-                                />
+                        )}
+                      />
+                    </View>
+                  ))
+                ) : question.type === "select" ? (
+                  <Controller
+                    control={form.control}
+                    name={question.key as keyof SurveySchemaType}
+                    render={({
+                      field: { onChange, value },
+                      fieldState: { error },
+                    }) => (
+                      <View>
+                        <TextInput
+                          // label={question.question}
+                          mode="outlined"
+                          value={value as string}
+                          onChangeText={(text) => {
+                            onChange(text);
+                            // fetchSuggestions(text); // solo filtrar options de la lista de sugerencias
+                          }}
+                          error={!!error}
+                        />
 
-                                {/* Lista de sugerencias */}
-                                <FlatList
-                                  data={question.options}
-                                  keyExtractor={(item) => item.value.toString()}
-                                  renderItem={({ item }) => (
-                                    <TouchableOpacity
-                                      onPress={() => {
-                                        onChange(item.value.toString());
-                                        form.setValue(
-                                          question.key as keyof SurveySchemaType,
-                                          item.value.toString()
-                                        );
-                                        // setSuggestions([]); // Cierra las sugerencias
-                                        // fetchGeolocation(item.description);
-                                      }}
-                                    >
-                                      <List.Item
-                                        title={item.label}
-                                        description={item.summary}
-                                      />
-                                    </TouchableOpacity>
-                                  )}
-                                  // style={styles.suggestionsList}
-                                />
-                              </View>
-                            )}
-                            rules={{
-                              required: true, // Reglas de validación
-                            }}
-                          />
-                        ) : question.type === "text" ? (
-                          <FormItem>
-                            <TextInput
-                              placeholder={option.label}
-                              mode="outlined"
-                              value={field.value.toString()}
-                              onChangeText={(text) => {
-                                field.onChange(text);
+                        {/* Lista de sugerencias */}
+                        <FlatList
+                          data={question.options}
+                          keyExtractor={(item) => item.value.toString()}
+                          renderItem={({ item }) => (
+                            <TouchableOpacity
+                              onPress={() => {
+                                onChange(item.value.toString());
+                                form.setValue(
+                                  question.key as keyof SurveySchemaType,
+                                  item.value.toString()
+                                );
+                                // setSuggestions([]); // Cierra las sugerencias
+                                // fetchGeolocation(item.description);
                               }}
-                            />
-                          </FormItem>
-                        ) : (
-                          <Fragment></Fragment>
-                        )
-                      }
-                    />
-                  </View>
-                ))}
+                            >
+                              <List.Item
+                                title={item.label}
+                                description={item.summary}
+                              />
+                            </TouchableOpacity>
+                          )}
+                          // style={styles.suggestionsList}
+                        />
+                      </View>
+                    )}
+                    rules={{
+                      required: true, // Reglas de validación
+                    }}
+                  />
+                ) : question.type === "text" ? (
+                  <FormField
+                    control={form.control}
+                    name={question.key as keyof SurveySchemaType}
+                    render={({ field }) => (
+                      <FormItem>
+                        <TextInput
+                          placeholder={"Seleccione una opción"}
+                          mode="outlined"
+                          value={field.value.toString()}
+                          onChangeText={(text) => {
+                            field.onChange(text);
+                          }}
+                        />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <Fragment></Fragment>
+                )}
               </View>
             )
           )}
         </Form>
-      </View>
+      </ScrollView>
       <View style={styles.footer}>
         <Button onPress={handlePrevious} disabled={page === 0}>
           Anterior
         </Button>
         <Button
-          onPress={quizProgrees === totalQuestions - 1 ? form.handleSubmit(handleSubmit) : handleNext}
+          onPress={
+            quizProgrees === totalQuestions - 1
+              ? form.handleSubmit(handleSubmit)
+              : handleNext
+          }
           disabled={page === totalPages - 1}
         >
-          {page === totalPages - 1
-            ? "Finalizar encuesta"
-            : "Siguiente"}
+          {page === totalPages - 1 ? "Finalizar encuesta" : "Siguiente"}
         </Button>
       </View>
     </SafeAreaView>
@@ -215,7 +232,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     padding: 10,
-    overflow: "scroll",
+    overflow: "visible",
     height: "60%",
   },
   footer: {
@@ -227,5 +244,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
+  },
+  radioLabel: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    gap: 0,
   },
 });
