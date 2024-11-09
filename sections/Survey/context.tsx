@@ -40,6 +40,9 @@ export function SurveyProvider({ children }: { children: React.ReactNode }) {
 
   const form = useForm<SurveySchemaType>({
     resolver: zodResolver(SurveySchema),
+    defaultValues: {
+      fecha: new Date(),
+    }
   })
 
   const [step, setStep] = useState<Step>( isCompleted ? steps["results"] : steps["init"]);

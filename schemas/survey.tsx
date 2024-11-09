@@ -3,18 +3,17 @@ import { z } from 'zod';
 
 export const SurveySchema = z.object({
   // Medición de productividad
-  cumplimientoMetaVenta: z.number().min(1, "Cumplimiento meta venta requerido"),
-  volumenVentaDiaria: z.number().min(1, "Campo requerido"),
-  comparacionVenta: z.number().min(1, "Campo requerido"),
-  capacidadGastoClientes: z.number().min(1, "Campo requerido"),
-  satisfaccionVenta: z.number().min(1, "Campo requerido"),
+  cumplimientoMetaVenta: z.number(),
+  volumenVentaDiaria: z.number(),
+  comparacionVenta: z.number(),
+  capacidadGastoClientes: z.number(),
+  satisfaccionVenta: z.number(),
 
   // Otras métricas
   categoriaProductoMasVendido: z.string(),
   factorExterno : z.string(),
-  ingresosCubrenGastos: z.string(),
-  competencia: z.coerce.string(),
-  fecha: z.date(),
+  competencia: z.string(),
+  fecha: z.coerce.date(),
 })
 
 export type SurveySchemaType = z.infer<typeof SurveySchema>;

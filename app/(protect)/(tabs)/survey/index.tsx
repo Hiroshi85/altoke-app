@@ -3,6 +3,7 @@ import { Tabs } from "expo-router";
 import { Fragment } from "react";
 import Survey from "@/sections/Survey";
 import { SurveyProvider } from "@/sections/Survey/context";
+import SurveyPage from "@/sections/Survey/views";
 
 export default function DailySurvey() {
   return (
@@ -12,7 +13,7 @@ export default function DailySurvey() {
           title: "Encuesta diaria",
         }}
       />
-      <Survey />
+      <SurveyPage />
     </SurveyProvider>
   );
 }
