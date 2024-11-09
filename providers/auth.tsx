@@ -7,13 +7,14 @@ import {
 import { UserData } from "@/types/auth";
 import { Href, router, Stack } from "expo-router";
 import { createContext, useContext, useEffect, useState } from "react";
+import firestore from '@react-native-firebase/firestore';
 
 export type AuthContextData = {
     authData?: UserData;
-    setAuthData: (authData: UserData) => void;
+    setAuthData: (authData: UserData) => Promise<void>;
     loading: boolean;
     signOut(): Promise<void>;
-    signIn(): Promise<AuthStatusResponse>;
+    signIn(id: string): Promise<AuthStatusResponse>;
 };
 
 export interface LoginResponse {
@@ -34,6 +35,14 @@ export interface AuthStatusResponse {
     redirect: Href<string | object>;
     ok: boolean;
 }
+
+export interface IUser {
+    "auth-status": string
+    metadata: any
+    nombre: string
+    telefono: string
+  }
+  
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
@@ -58,20 +67,27 @@ export default function AuthProvider({
         });
     }, []);
 
-    const signIn = async (): Promise<AuthStatusResponse> => {
+    async function setAuth(auth: UserData) {
+        setAuthData(auth);
+        await setStorageItemAsync("auth", JSON.stringify(auth));
+    }
+
+    const signIn = async (id: string): Promise<AuthStatusResponse> => {
+        const user = (await firestore().collection('users').doc(id).get()).data();
+
+        if (!user) {
+            throw new Error("User not found");
+        }
 
         // Simulates data from firebase
         const dataUser: UserData = {
-            id: "abcd",
-            telefono: "987654321",
-            // name: "John Doe",
-            nombre: "Test User",
-            "auth-status": "NEW",
+            id: id,
+            telefono: user.telefono,
+            nombre: user.nombre,
+            "auth-status": user["auth-status"],
         }
 
-        setAuthData(dataUser);
-        await setStorageItemAsync("auth", JSON.stringify(dataUser));
-
+        await setAuth(dataUser);
 
         if (dataUser["auth-status"] === "NEW") {
             return {
@@ -92,8 +108,13 @@ export default function AuthProvider({
         router.replace("/login");
     };
 
+    function reload() {
+
+
+    }
+
     return (
-        <AuthContext.Provider value={{ authData, setAuthData, loading, signIn, signOut }}>
+        <AuthContext.Provider value={{ authData, setAuthData: setAuth, loading, signIn, signOut }}>
             {children}
         </AuthContext.Provider>
     );

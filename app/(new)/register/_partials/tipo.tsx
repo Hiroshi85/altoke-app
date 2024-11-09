@@ -50,6 +50,7 @@ const tipos = [
 
 function TipoForm() {
   const { colors } = useTheme();
+  const {setStep, form: fatherForm} = useRegister();
   const form = useForm<tipoSchemaType>({
     resolver: zodResolver(tipoSchema),
     defaultValues: {
@@ -59,7 +60,8 @@ function TipoForm() {
 
 
   function handleSubmit(data: tipoSchemaType) {
-    console.log(data)
+    fatherForm.setValue("tipo", data)
+    setStep("finish") 
   }
 
   return (

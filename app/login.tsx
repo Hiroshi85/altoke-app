@@ -1,72 +1,111 @@
 import { Pressable, View, Image, StatusBar, ToastAndroid } from "react-native";
 import { useState } from "react";
 import { Href, router } from "expo-router";
-import { Button, Snackbar, Text } from "react-native-paper";
+import { Button, Snackbar, Text, TextInput, useTheme } from "react-native-paper";
 import { APP_NAME } from "@/constants/App";
 import { useAuth } from "@/providers/auth";
-import { UserData } from "@/types/auth";
+import { z } from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/forms";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const login = z.object({
+  id: z.string(),
+})
+
 
 export default function SignIn() {
   const { signIn } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [state, setState] = useState({
-    userInfo: null as UserData | null,
-    error: null as any | null,
-  });
 
-  async function _signIn() {
-    setLoading(true);
-    const { redirect } = await signIn();
+  async function _signIn(data: z.infer<typeof login>) {
+    const { redirect } = await signIn(data.id);
 
     if (redirect) {
       router.navigate(redirect);
     }
-
-    setLoading(false);
   }
 
+  const {colors} = useTheme();
+
+  const form = useForm<z.infer<typeof login>>({
+    resolver: zodResolver(login),
+    defaultValues: {
+      id: "YxbgkWoAT8eSHwKP1oX0",
+    },
+  });
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        paddingHorizontal: 40,
-        position: "relative",
-      }}
-    >
-      <View>
-        <Text
-          variant="headlineLarge"
-          style={{ fontWeight: "bold", textAlign: "center" }}
-        >
-         {APP_NAME} 
-        </Text>
-
-        <Text
-          variant="bodyMedium"
-          style={{
-            textAlign: "center",
-            marginVertical: 5,
-            color: "gray",
-          }}
-        >
-          Mejora tu negocio con ayuda de la Inteligencia Artificial
-        </Text>
-
+    <Form {...form}>
+      <View
+        style={{
+          flex: 1,
+          // marginTop: 400,
+          justifyContent: "center",
+          alignItems: "center",
+          paddingHorizontal: 40,
+          position: "relative",
+          backgroundColor: colors.background, 
+        }}
+      >
         <View style={{
-          marginTop: 20,
+          marginTop: 400,
         }}>
-          <Button
-            mode="outlined"
-            textColor="black"
-            disabled={loading}
-            onPress={_signIn}
+          <Text
+            variant="headlineLarge"
+            style={{ fontWeight: "bold", textAlign: "center" }}
           >
-            Comienza ahora
-          </Button>
+            {APP_NAME}
+          </Text>
+
+          <Text
+            variant="bodyMedium"
+            style={{
+              textAlign: "center",
+              marginVertical: 5,
+              color: "gray",
+            }}
+          >
+            Mejora tu negocio con ayuda de la Inteligencia Artificial
+          </Text>
+
+          <View style={{
+            marginTop: 20,
+            gap: 20
+          }}>
+            <FormField
+              control={form.control}
+              name="id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Id</FormLabel>
+                  <FormControl>
+                    <TextInput
+                      mode="outlined"
+                      style={{
+                        backgroundColor: "white",
+                      }}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.nativeEvent.text
+                        )
+                      }
+                      value={String(field.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              mode="contained"
+              disabled={form.formState.isSubmitting}
+              onPress={form.handleSubmit(_signIn)}
+            >
+              Comienza ahora
+            </Button>
+          </View>
         </View>
       </View>
-    </View>
+    </Form>
   );
 }
