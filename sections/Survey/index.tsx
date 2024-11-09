@@ -221,8 +221,11 @@ export default function Survey() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "space-between",
+    display: "flex",
+    flexDirection: "column",
+    paddingBottom: 4,
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
   header: {
     display: "flex",
@@ -234,13 +237,17 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     padding: 15,
+    paddingBottom: 100,
     overflow: "hidden",
     gap: 10,
+    maxHeight: "80%",
+    marginBottom: 20,
   },
   footer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    padding: 20,
+    paddingBottom: 5, 
+    paddingHorizontal: 20,
   },
   radioInput: {
     flexDirection: "row",

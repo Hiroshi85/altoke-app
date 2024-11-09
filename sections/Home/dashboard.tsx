@@ -1,11 +1,13 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { ScrollView, StyleSheet } from "react-native";
-import { Card, Title, Paragraph, Button } from "react-native-paper";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { Card, Title, Paragraph, Button, Text, Icon } from "react-native-paper";
 import ProductCategoryChart from "./_partials/product-category-chart";
 import firestore from "@react-native-firebase/firestore";
 import ProductivityLineChart from "./_partials/productivity-line-chart";
 import DailyMetricsChart from "./_partials/daily-metrics-chart";
 import { MonitoreoDiario } from "@/types/Models/monitoreo-diario";
+import { getMonthByNumber } from "@/utils/get-month-by-number";
+import { ThemedText } from "@/components/ThemedText";
 
 // Datos simulados de respuestas de encuesta para los últimos 7 días
 const fetchMonitoreoData = async (filter?: {
@@ -110,25 +112,26 @@ export default function DashboardDiario() {
         ]);
       }
       console.log(monitoreoData.find((day) => day.fecha == selectedDate));
-      console.log("Selected date", selectedDate?.getTime())
-      console.log("Monitoreo data", monitoreoData)
+      console.log("Selected date", selectedDate?.getTime());
+      console.log("Monitoreo data", monitoreoData);
       return (
-        monitoreoData.find((day) => day.fecha.getTime() === selectedDate?.getTime()) ||
-        monitoreoData[monitoreoData.length - 1]
+        monitoreoData.find(
+          (day) => day.fecha.getTime() === selectedDate?.getTime()
+        ) || monitoreoData[monitoreoData.length - 1]
       );
     }
   }, [selectedDate]);
 
   const renderDateSelector = () => {
     const currentDate = new Date();
-  
+
     // Generar un array de fechas de los últimos 7 días
     const lastSevenDays = Array.from({ length: 7 }, (_, i) => {
       const date = new Date();
       date.setDate(currentDate.getDate() - i);
       return date;
     });
-  
+
     return (
       <ScrollView
         horizontal
@@ -138,12 +141,19 @@ export default function DashboardDiario() {
         {lastSevenDays.map((date, index) => (
           <Button
             key={index}
-            mode={selectedDate?.toDateString() === date.toDateString() ? "contained" : "outlined"}
+            mode={
+              selectedDate?.toDateString() === date.toDateString()
+                ? "contained"
+                : "outlined"
+            }
             onPress={() => {
               console.log("Date selected:", date);
-              setSelectedDate(date)
+              setSelectedDate(date);
             }}
-            style={styles.selectorButton}
+            style={{
+              ...styles.selectorButton,
+            }}
+            textColor={selectedDate?.toDateString() === date.toDateString() ? "#fff" : "#000"}
           >
             {date.getDate()} {/* Muestra solo el día del mes */}
           </Button>
@@ -176,8 +186,27 @@ export default function DashboardDiario() {
     <ScrollView style={styles.container}>
       <Title style={styles.title}>Dashboard de Encuesta Diaria</Title>
 
-      {renderDateSelector()}
-
+      <View style={
+        {
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+        }
+      }>
+        <View style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 10,
+        }}>
+        <Icon
+          source={"calendar"}
+          size={30}
+          color={"#1e88e5"}
+        />
+        <ThemedText type="subtitle">{selectedDate && getMonthByNumber(selectedDate.getMonth())} </ThemedText>
+        </View>
+        {renderDateSelector()}
+      </View>
       <Card style={styles.card} elevation={0}>
         <Card.Content>
           <Title>Resumen del Día</Title>
