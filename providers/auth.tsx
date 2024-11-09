@@ -83,6 +83,7 @@ export default function AuthProvider({
             console.log("LOG SENDED")
             console.log("LOGIN USER", loginResponse.user.uid);
             const userRef = (await firestore().collection("users").where("authID", "==", loginResponse.user.uid).get()).docs[0]
+            const emprendimiento = (await firestore().collection("emprendimiento").where("userID", "==", userRef.ref).get()).docs[0];
             const user = userRef.data() as IUser;
             const id = userRef.id;
             console.log("USER", user);
@@ -91,6 +92,7 @@ export default function AuthProvider({
                 id: id,
                 telefono: user.telefono,
                 nombre: user.nombre,
+                geo: emprendimiento.data()["ubicacion-geo"],
                 "auth-status": user["auth-status"] as "REGISTERED" | "NEW",
                 authID: loginResponse.user.uid,
             }
