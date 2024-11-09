@@ -26,7 +26,7 @@ function calcularModa<T>(arr: T[]): T | null {
     const maxFrecuencia = Math.max(...Object.values(frecuencia));
     const modas = Object.keys(frecuencia).filter(key => frecuencia[key] === maxFrecuencia);
   
-    return modas.length === 1 ? JSON.parse(modas[0]) : null; // Devuelve la moda si es única, si hay empate devuelve null
+    return JSON.parse(modas[0]); // Devuelve la moda si es única, si hay empate devuelve null
   }
   
   // Función para calcular el promedio
