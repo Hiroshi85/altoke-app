@@ -36,20 +36,20 @@ export default function TabLayout() {
         }}
         />
       <Tabs.Screen
-        name="explore"
+        name="chat"
         options={{
-          title: 'Explore',
+          title: 'chat',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'chatbox' : 'chatbox-outline'} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="user"
+        name="chat/index"
         options={{
-          title: 'Usuario',
+          title: 'Apoyo',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'body' : 'body-outline'} color={color} />
+            <TabBarIcon name={focused ? 'help' : 'help-outline'} color={color} />
           ),
         }}
       />

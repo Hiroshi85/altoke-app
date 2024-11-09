@@ -10,7 +10,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const login = z.object({
-  id: z.string(),
+  telefono: z.string(),
+  password: z.string(),
 })
 
 
@@ -18,37 +19,41 @@ export default function SignIn() {
   const { signIn } = useAuth();
 
   async function _signIn(data: z.infer<typeof login>) {
-    const { redirect } = await signIn(data.id);
+    const { redirect } = await signIn(data.telefono, data.password);
 
     if (redirect) {
       router.navigate(redirect);
     }
   }
 
-  const {colors} = useTheme();
+  const { colors } = useTheme();
 
   const form = useForm<z.infer<typeof login>>({
     resolver: zodResolver(login),
     defaultValues: {
-      id: "YxbgkWoAT8eSHwKP1oX0",
+      // id: "YxbgkWoAT8eSHwKP1oX0",
+      telefono: "987654321",
+      password: ""
     },
   });
 
   return (
     <Form {...form}>
+      
       <View
         style={{
           flex: 1,
           // marginTop: 400,
+          height: "100%",
           justifyContent: "center",
           alignItems: "center",
           paddingHorizontal: 40,
           position: "relative",
-          backgroundColor: colors.background, 
+          backgroundColor: colors.background,
         }}
       >
         <View style={{
-          marginTop: 400,
+          marginTop: 500,
         }}>
           <Text
             variant="headlineLarge"
@@ -74,16 +79,42 @@ export default function SignIn() {
           }}>
             <FormField
               control={form.control}
-              name="id"
+              name="telefono"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Id</FormLabel>
+                  <FormLabel>Teléfono</FormLabel>
                   <FormControl>
                     <TextInput
                       mode="outlined"
                       style={{
                         backgroundColor: "white",
                       }}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.nativeEvent.text
+                        )
+                      }
+                      value={String(field.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <TextInput
+                      mode="outlined"
+                      style={{
+                        backgroundColor: "white",
+                      }}
+                      secureTextEntry={true}
                       onChange={(e) =>
                         field.onChange(
                           e.nativeEvent.text
