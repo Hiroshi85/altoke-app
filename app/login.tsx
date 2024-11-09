@@ -39,10 +39,12 @@ export default function SignIn() {
 
   return (
     <Form {...form}>
+      
       <View
         style={{
           flex: 1,
           // marginTop: 400,
+          height: "100%",
           justifyContent: "center",
           alignItems: "center",
           paddingHorizontal: 40,

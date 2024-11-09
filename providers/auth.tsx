@@ -85,6 +85,7 @@ export default function AuthProvider({
             const userRef = (await firestore().collection("users").where("authID", "==", loginResponse.user.uid).get()).docs[0]
             const user = userRef.data() as IUser;
             const id = userRef.id;
+            console.log("USER", user);
 
             dataUser = {
                 id: id,
@@ -110,6 +111,7 @@ export default function AuthProvider({
                     telefono,
                     nombre: `user-${telefono}`,
                     "auth-status": "NEW",
+                    authID: id,
                 })).get();
 
                 const user = newUserRef.data() as IUser;
@@ -131,12 +133,17 @@ export default function AuthProvider({
 
         await setAuth(dataUser);
 
+        console.log("DATA USER", dataUser);
+
         if (dataUser["auth-status"] === "NEW") {
+            console.log("NEW USER");
             return {
                 ok: true,
                 redirect: "/register",
             };
         }
+    
+        console.log("REGISTERED USER");
 
         return {
             ok: true,
