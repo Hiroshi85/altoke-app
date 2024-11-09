@@ -30,6 +30,16 @@ const obtenerMensajesModelo = async () => {
       return response.text();
 }
 
+export const obtenerContextoDelModelo = async () => {
+  const prompt =`Eres un analista en supervivencia de mypes en el contexto peruano,
+    que describe la viabilidad de un emprendimiento en base al sector, ubicación y la satisfacción de
+    de los emprendedores de la zona. Resume tu hallazgo en base a menos de 100 palabras, teniendo en cuenta los siguientes datos: `;
+
+  const result = await model.generateContent(prompt);
+
+  return result.response.text();  
+}
+
 export function quitarEstiloMarkdown(texto: string): string {
     // Eliminar enlaces en formato [texto](enlace)
     texto = texto.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1');

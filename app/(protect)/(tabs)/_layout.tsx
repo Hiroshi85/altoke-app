@@ -45,11 +45,20 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="chat/index"
+        name="apoyo"
         options={{
           title: 'Apoyo',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'help' : 'help-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="contexto"
+        options={{
+          title: 'Contexto',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'map' : 'map-outline'} color={color} />
           ),
         }}
       />

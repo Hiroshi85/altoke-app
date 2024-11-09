@@ -44,7 +44,7 @@ const tipos = [
   },
   {
     nombre: "Establecido",
-    descripcion: "Negocio que lleva más de 1 año"
+    descripcion: "Negocio que lleva menos de 1 año"
   }
 ]
 
