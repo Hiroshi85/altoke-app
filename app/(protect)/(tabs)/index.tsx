@@ -1,30 +1,26 @@
-import { Text, Image, StyleSheet, Platform, View } from 'react-native';
+import { StyleSheet } from "react-native";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { Tabs } from 'expo-router';
-import { APP_NAME } from '@/constants/App';
+import { APP_NAME } from "@/constants/App";
+import { Fragment } from "react";
+import { Tabs } from "expo-router";
+import { ThemedText } from "@/components/ThemedText";
 
 export default function HomeScreen() {
-
   return (
-    <>
-      <Tabs.Screen 
+    <Fragment>
+      <Tabs.Screen
         options={{
           title: APP_NAME,
         }}
       />
-      <View>
-        <Text>
-          Hello
-        </Text>
-      </View>
-    </>
-  )
-
-
+      <ThemedText style={{
+        position: "absolute",
+        margin: "auto"
+      }}>
+        Dashboard
+      </ThemedText>
+    </Fragment>
+  );
 
   // return (
   //   <ParallaxScrollView
@@ -72,8 +68,8 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   stepContainer: {
@@ -85,6 +81,6 @@ const styles = StyleSheet.create({
     width: 290,
     bottom: 0,
     left: 0,
-    position: 'absolute',
+    position: "absolute",
   },
 });
