@@ -74,6 +74,16 @@ export const DAILY_SURVEY_QUESTIONS: SurveyQuestion[] = [
     ],
   },
   {
+    id: "10",
+    key: "competencia",
+    type: "radio",
+    question: "¿Has notado nuevas empresas o competencia en tu zona?",
+    options: [
+      { label: "Sí", value: "SI" },
+      { label: "No", value: "NO" },
+    ],
+  },
+  {
     id: "6",
     type: "select",
     key: "categoriaProductoMasVendido",
@@ -127,14 +137,5 @@ export const DAILY_SURVEY_QUESTIONS: SurveyQuestion[] = [
       },
     ],
   },
-  {
-    id: "10",
-    key: "competencia",
-    type: "radio",
-    question: "¿Has notado nuevas empresas o competencia en tu zona?",
-    options: [
-      { label: "Sí", value: "SI" },
-      { label: "No", value: "NO" },
-    ],
-  },
+  
 ];
