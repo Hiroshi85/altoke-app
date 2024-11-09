@@ -1,7 +1,7 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { StyleSheet, Image, Platform, View, FlatList } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Appbar, Button, Card, Text, TextInput } from 'react-native-paper';
+import { model, quitarEstiloMarkdown } from '@/utils/gemini';
 
 interface Message {
   id: number;
@@ -12,33 +12,86 @@ interface Message {
 export default function TabTwoScreen() {
   const [message, setMessage] = useState<string>(''); // El mensaje que se escribe
   const [messages, setMessages] = useState<Message[]>([]); // Array de mensajes
-  const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false); // Indicador de espera
+  const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(true); // Indicador de espera
   const flatListRef = useRef<FlatList>(null); // Referencia para el FlatList
+  const [chat, setChat] = useState<any>(null); // Referencia al chat de Gemini
 
-  const sendMessage = () => {
-    if (message.trim() && !isWaitingForResponse) {
+  // Datos cuantitativos (ejemplo de ventas y objetivos)
+  const ventasHoy = 100;
+  const objetivoMañana = 120;
+  const ventasSemana = 500;
+
+  // Inicializar el chat y obtener las recomendaciones iniciales
+  useEffect(() => {
+    const initializeChat = async () => {
+      try {
+        // Inicializar el chat de Gemini con datos iniciales y obtener la respuesta
+        const initialChat = model.startChat({
+          history: [
+            {
+              role: "user",
+              parts: [
+                {
+                  text: `Datos de ventas:
+                    Ventas de hoy: ${ventasHoy} productos
+                    Objetivo de ventas para mañana: ${objetivoMañana} productos
+                    Ventas acumuladas esta semana: ${ventasSemana} productos.
+                    ¿Cuáles son tus recomendaciones para el día siguiente?. ¿Qué tendencias hay?`,
+                },
+              ],
+            },
+          ],
+        });
+
+        // Enviar el mensaje y recibir la recomendación inicial
+        const result = await initialChat.sendMessage("");
+        const response = result.response;
+        const recommendation = quitarEstiloMarkdown(response.text());
+
+        // Añadir la respuesta del modelo como el primer mensaje
+        const botMessage: Message = { id: 1, text: recommendation, isUser: false };
+        setMessages([botMessage]);
+        setIsWaitingForResponse(false); // Ahora el usuario puede interactuar
+        setChat(initialChat); // Guardar el chat para futuras interacciones
+      } catch (error) {
+        console.error("Error al iniciar el chat:", error);
+        setIsWaitingForResponse(false);
+      }
+    };
+
+    if(!chat) initializeChat();
+  }, []);
+
+  const sendMessage = async () => {
+    if (message.trim() && chat && !isWaitingForResponse) {
       // Crear el mensaje del usuario
-      const userMessage: Message = { id: messages.length, text: message, isUser: true };
-      
+      const userMessage: Message = { id: messages.length + 1, text: message, isUser: true };
+
       // Actualizamos el estado con el mensaje del usuario
       setMessages((prevMessages) => [...prevMessages, userMessage]);
-      
+
       // Limpiar el campo de entrada
       setMessage('');
 
       // Establecer que estamos esperando una respuesta
       setIsWaitingForResponse(true);
 
-      // Simular una respuesta del bot después de 2 segundos
-      setTimeout(() => {
-        const botMessage: Message = { id: messages.length + 1, text: 'Respuesta automática', isUser: false };
-        
-        // Añadir el mensaje del bot al array
+      // Enviar el mensaje del usuario y recibir la respuesta del modelo
+      try {
+        const result = await chat.sendMessage(message); // Enviar el mensaje de consulta
+        const response = await result.response; // Obtener la respuesta del modelo
+        const modelResponse = response.text(); // Respuesta de Gemini
+
+        // Añadir la respuesta del modelo al chat
+        const botMessage: Message = { id: messages.length + 2, text: modelResponse, isUser: false };
         setMessages((prevMessages) => [...prevMessages, botMessage]);
 
         // Finalizar la espera
         setIsWaitingForResponse(false);
-      }, 2000);
+      } catch (error) {
+        console.error("Error al enviar el mensaje:", error);
+        setIsWaitingForResponse(false);
+      }
     }
   };
 
@@ -53,14 +106,16 @@ export default function TabTwoScreen() {
     <Card
       style={[styles.messageCard, item.isUser ? styles.userMessage : styles.botMessage]}
     >
-      <Text style={{ color: 'white' }}>{item.text}</Text>
+      <Text >{item.text}</Text>
+      
+      
     </Card>
   );
 
   return (
     <View style={styles.container}>
       <Appbar.Header>
-        <Appbar.Content title="Chat" />
+        <Appbar.Content title="Chat de Recomendaciones" />
       </Appbar.Header>
 
       <FlatList
@@ -69,7 +124,7 @@ export default function TabTwoScreen() {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderMessage}
         contentContainerStyle={styles.messagesContainer}
-        inverted={false} // Aseguramos que el orden de los mensajes es de arriba a abajo
+        inverted={false} // Mensajes de arriba a abajo
       />
 
       <View style={styles.inputContainer}>
@@ -92,85 +147,6 @@ export default function TabTwoScreen() {
       </View>
     </View>
   );
-  // return (
-    
-  //   // <ParallaxScrollView
-  //   //   headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-  //   //   headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
-  //   //   <ThemedView style={styles.titleContainer}>
-  //   //     <ThemedText type="title">Explore</ThemedText>
-  //   //   </ThemedView>
-  //   //   <ThemedText>This app includes example code to help you get started.</ThemedText>
-  //   //   <Collapsible title="File-based routing">
-  //   //     <ThemedText>
-  //   //       This app has two screens:{' '}
-  //   //       <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-  //   //       <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-  //   //     </ThemedText>
-  //   //     <ThemedText>
-  //   //       The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-  //   //       sets up the tab navigator.
-  //   //     </ThemedText>
-  //   //     <ExternalLink href="https://docs.expo.dev/router/introduction">
-  //   //       <ThemedText type="link">Learn more</ThemedText>
-  //   //     </ExternalLink>
-  //   //   </Collapsible>
-  //   //   <Collapsible title="Android, iOS, and web support">
-  //   //     <ThemedText>
-  //   //       You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-  //   //       <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-  //   //     </ThemedText>
-  //   //   </Collapsible>
-  //   //   <Collapsible title="Images">
-  //   //     <ThemedText>
-  //   //       For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-  //   //       <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-  //   //       different screen densities
-  //   //     </ThemedText>
-  //   //     <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-  //   //     <ExternalLink href="https://reactnative.dev/docs/images">
-  //   //       <ThemedText type="link">Learn more</ThemedText>
-  //   //     </ExternalLink>
-  //   //   </Collapsible>
-  //   //   <Collapsible title="Custom fonts">
-  //   //     <ThemedText>
-  //   //       Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-  //   //       <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-  //   //         custom fonts such as this one.
-  //   //       </ThemedText>
-  //   //     </ThemedText>
-  //   //     <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-  //   //       <ThemedText type="link">Learn more</ThemedText>
-  //   //     </ExternalLink>
-  //   //   </Collapsible>
-  //   //   <Collapsible title="Light and dark mode components">
-  //   //     <ThemedText>
-  //   //       This template has light and dark mode support. The{' '}
-  //   //       <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-  //   //       what the user's current color scheme is, and so you can adjust UI colors accordingly.
-  //   //     </ThemedText>
-  //   //     <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-  //   //       <ThemedText type="link">Learn more</ThemedText>
-  //   //     </ExternalLink>
-  //   //   </Collapsible>
-  //   //   <Collapsible title="Animations">
-  //   //     <ThemedText>
-  //   //       This template includes an example of an animated component. The{' '}
-  //   //       <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-  //   //       the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText> library
-  //   //       to create a waving hand animation.
-  //   //     </ThemedText>
-  //   //     {Platform.select({
-  //   //       ios: (
-  //   //         <ThemedText>
-  //   //           The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-  //   //           component provides a parallax effect for the header image.
-  //   //         </ThemedText>
-  //   //       ),
-  //   //     })}
-  //   //   </Collapsible>
-  //   // </ParallaxScrollView>
-  // );
 }
 
 
@@ -198,11 +174,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   messageCard: {
-    marginBottom: 10,
+    maxWidth: '80%', // Limita el ancho del globo de mensaje
     padding: 10,
     borderRadius: 10,
   },
   userMessage: {
+    color: 'white',
     alignSelf: 'flex-end',
     backgroundColor: '#6200ee',
   },
