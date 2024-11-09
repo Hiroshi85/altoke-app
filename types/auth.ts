@@ -3,4 +3,5 @@ export type UserData = {
     telefono:string;
     nombre: string;
     "auth-status": "NEW" | "REGISTERED";
+    authID?: string;
 }

@@ -8,13 +8,14 @@ import { UserData } from "@/types/auth";
 import { Href, router, Stack } from "expo-router";
 import { createContext, useContext, useEffect, useState } from "react";
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 export type AuthContextData = {
     authData?: UserData;
     setAuthData: (authData: UserData) => Promise<void>;
     loading: boolean;
     signOut(): Promise<void>;
-    signIn(id: string): Promise<AuthStatusResponse>;
+    signIn(telefono: string, password: string): Promise<AuthStatusResponse>;
 };
 
 export interface LoginResponse {
@@ -41,8 +42,9 @@ export interface IUser {
     metadata: any
     nombre: string
     telefono: string
-  }
-  
+    authID: string
+}
+
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
@@ -72,19 +74,59 @@ export default function AuthProvider({
         await setStorageItemAsync("auth", JSON.stringify(auth));
     }
 
-    const signIn = async (id: string): Promise<AuthStatusResponse> => {
-        const user = (await firestore().collection('users').doc(id).get()).data();
+    const signIn = async (telefono: string, password: string): Promise<AuthStatusResponse> => {
+        let dataUser: UserData;
+        try {
+            console.log("SIGN IN", telefono, password);
+            const loginResponse = await auth().signInWithEmailAndPassword(telefono + "@gmail.com", password);
 
-        if (!user) {
-            throw new Error("User not found");
-        }
+            console.log("LOG SENDED")
+            console.log("LOGIN USER", loginResponse.user.uid);
+            const userRef = (await firestore().collection("users").where("authID", "==", loginResponse.user.uid).get()).docs[0]
+            const user = userRef.data() as IUser;
+            const id = userRef.id;
 
-        // Simulates data from firebase
-        const dataUser: UserData = {
-            id: id,
-            telefono: user.telefono,
-            nombre: user.nombre,
-            "auth-status": user["auth-status"],
+            dataUser = {
+                id: id,
+                telefono: user.telefono,
+                nombre: user.nombre,
+                "auth-status": user["auth-status"] as "REGISTERED" | "NEW",
+                authID: loginResponse.user.uid,
+            }
+        } catch (e: any) {
+            console.log(e);
+
+            console.log("FIREBASE ERROR", e.code);
+            if (e.code === "auth/user-not-found") {
+                console.log("CREATING USER", telefono, password);
+                // NOT THE BEST WAY TO HANDLE THIS
+                // IT SHOULD BE DONE IN THE BACKEND 
+                const response = await auth().createUserWithEmailAndPassword(telefono + "@gmail.com", password);
+                const id = response.user?.uid;
+                console.log("CREATED USER", id);
+
+                // Create user in the database
+                const newUserRef = await (await firestore().collection("users").add({
+                    telefono,
+                    nombre: `user-${telefono}`,
+                    "auth-status": "NEW",
+                })).get();
+
+                const user = newUserRef.data() as IUser;
+
+                dataUser = {
+                    id: newUserRef.id,
+                    telefono: user.telefono,
+                    nombre: user.nombre,
+                    "auth-status": user["auth-status"] as "REGISTERED" | "NEW",
+                    authID: id,
+                }
+            } else {
+                return {
+                    ok: false,
+                    redirect: "/login",
+                }
+            }
         }
 
         await setAuth(dataUser);
@@ -105,6 +147,7 @@ export default function AuthProvider({
     const signOut = async () => {
         await deleteStorageItemAsync("auth");
         setAuthData(undefined);
+        await auth().signOut();
         router.replace("/login");
     };
 
