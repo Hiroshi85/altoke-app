@@ -90,6 +90,7 @@ export default function Survey() {
         await firestore().collection("monitoreo-diario").add({
           emprendimientoId: emprendimientoDoc.id,
           "meta-venta": metaVentaInicial,
+          'geo' : authData.geo,
           ...data
         });
         setStep("results");

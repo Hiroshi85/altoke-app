@@ -4,6 +4,7 @@ import { APP_NAME } from "@/constants/App";
 import { Fragment } from "react";
 import { Tabs } from "expo-router";
 import { ThemedText } from "@/components/ThemedText";
+import ProductivityLineChart from "@/sections/Home/_partials/productivity-line-chart";
 
 export default function HomeScreen() {
   return (
@@ -19,6 +20,8 @@ export default function HomeScreen() {
       }}>
         Dashboard
       </ThemedText>
+      <ProductivityLineChart />
+
     </Fragment>
   );
 
