@@ -67,14 +67,16 @@ export function RegisterProvider({ children }: { children: React.ReactNode }) {
     }
 
 
-    await firestore().collection('emprendimiento').add({
+    const emprendimientoRef = await (await firestore().collection('emprendimiento').add({
       direccion: data.negocio.nombre,
       "meta-venta-inicial": data.ventas,
       nombre: data.negocio.nombre,
       sector: data.sector.nombre,
       "ubicacion-geo": new GeoPoint(data.negocio.coordenadas.lat, data.negocio.coordenadas.lng),
       userID: firestore().doc('users/' + authData?.id)
-    });
+    })).get()
+
+    const emprendimiento = emprendimientoRef.data();
 
     await firestore().collection('users').doc(authData?.id).update({
       "auth-status": "REGISTERED"
@@ -82,6 +84,7 @@ export function RegisterProvider({ children }: { children: React.ReactNode }) {
 
     setAuthData({
       ...authData,
+      geo: emprendimiento?.["ubicacion-geo"],
       "auth-status": "REGISTERED"
     });
 

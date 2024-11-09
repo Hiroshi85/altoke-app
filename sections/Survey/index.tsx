@@ -85,6 +85,8 @@ export default function Survey() {
         const emprendimientoDoc = emprendimientoQuery.docs[0];
         const dataEmprendimiento = emprendimientoDoc.data();
         console.log("DATA EMPRENDIMIENTO", dataEmprendimiento);
+        console.log(data)
+        console.log("AUTH DATA", authData);
 
         const metaVentaInicial = dataEmprendimiento["meta-venta-inicial"];
         await firestore().collection("monitoreo-diario").add({
