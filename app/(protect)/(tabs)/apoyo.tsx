@@ -11,7 +11,7 @@ export default function HomeScreen() {
     <>
       <Tabs.Screen 
         options={{
-          title: APP_NAME,
+          title: "Apoyo",
         }}
       />
       <View style={{
