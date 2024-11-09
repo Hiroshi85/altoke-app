@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { ScrollView, StatusBar, StyleSheet, View } from "react-native";
-import { Card, Title, Paragraph, Button, Text, Icon } from "react-native-paper";
+import { Card, Title, Paragraph, Button, Text, Icon, IconButton } from "react-native-paper";
 import ProductCategoryChart from "./_partials/product-category-chart";
 import firestore from "@react-native-firebase/firestore";
 import ProductivityLineChart from "./_partials/productivity-line-chart";
@@ -8,6 +8,7 @@ import DailyMetricsChart from "./_partials/daily-metrics-chart";
 import { MonitoreoDiario } from "@/types/Models/monitoreo-diario";
 import { getMonthByNumber } from "@/utils/get-month-by-number";
 import { ThemedText } from "@/components/ThemedText";
+import { useAuth } from "@/providers/auth";
 
 // Datos simulados de respuestas de encuesta para los últimos 7 días
 const fetchMonitoreoData = async (filter?: {
@@ -190,9 +191,26 @@ export default function DashboardDiario() {
     return "N/A";
   };
 
+  const {signOut} = useAuth();
+
   return (
     <ScrollView style={styles.container}>
-      <Title style={styles.title}>Dashboard de Encuesta Diaria</Title>
+      <View style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}>
+        <Title style={[ styles.title, {maxWidth: "80%"} ]}>Dashboard de Encuesta Diaria</Title>
+        {/* Cerrar Sessión Button */}
+        <IconButton
+          icon="logout"
+          mode="contained"
+          size={30}
+          onPress={async () => {
+            await signOut();
+          }} 
+        />
+      </View>
 
       <View style={
         {
