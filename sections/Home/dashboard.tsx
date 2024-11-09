@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StatusBar, StyleSheet, View } from "react-native";
 import { Card, Title, Paragraph, Button, Text, Icon } from "react-native-paper";
 import ProductCategoryChart from "./_partials/product-category-chart";
 import firestore from "@react-native-firebase/firestore";
@@ -136,7 +136,8 @@ export default function DashboardDiario() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={styles.selectorContainer}
+        style={[ styles.selectorContainer, {
+        } ]}
       >
         {lastSevenDays.map((date, index) => (
           <Button
@@ -150,9 +151,16 @@ export default function DashboardDiario() {
               console.log("Date selected:", date);
               setSelectedDate(date);
             }}
-            style={{
-              ...styles.selectorButton,
-            }}
+            style={[
+              styles.selectorButton,
+              {
+                borderTopRightRadius: index != lastSevenDays.length - 1 ? 0 : undefined,
+                borderBottomRightRadius: index != lastSevenDays.length - 1 ? 0 : undefined,
+                borderTopLeftRadius: index != 0 ? 0 : undefined,
+                borderBottomLeftRadius: index != 0 ? 0 : undefined,
+                borderRightWidth: index != lastSevenDays.length - 1 ? 0 : 1,
+              }
+            ]}
             textColor={selectedDate?.toDateString() === date.toDateString() ? "#fff" : "#000"}
           >
             {date.getDate()} {/* Muestra solo el día del mes */}
@@ -196,6 +204,7 @@ export default function DashboardDiario() {
         <View style={{
           display: "flex",
           flexDirection: "row",
+          alignItems: "center",
           gap: 10,
         }}>
         <Icon
@@ -203,7 +212,10 @@ export default function DashboardDiario() {
           size={30}
           color={"#1e88e5"}
         />
-        <ThemedText type="subtitle">{selectedDate && getMonthByNumber(selectedDate.getMonth())} </ThemedText>
+        <ThemedText type="subtitle" style={{
+          fontSize: 18,
+          fontWeight: 500,
+        }}>{selectedDate && getMonthByNumber(selectedDate.getMonth())} </ThemedText>
         </View>
         {renderDateSelector()}
       </View>
@@ -299,15 +311,16 @@ export default function DashboardDiario() {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: ( StatusBar.currentHeight || 0 ) + 10,
     flex: 1,
     padding: 16,
     backgroundColor: "#f5f5f5",
   },
   title: {
-    fontSize: 24,
+    marginTop: 20,
+    fontSize: 30,
     fontWeight: "bold",
-    marginBottom: 16,
-    textAlign: "center",
+    marginBottom: 20,
   },
   card: {
     marginBottom: 16,
@@ -321,7 +334,6 @@ const styles = StyleSheet.create({
   },
   selectorButton: {
     minWidth: 60,
-    marginRight: 8,
   },
   legendContainer: {
     marginTop: 16,
