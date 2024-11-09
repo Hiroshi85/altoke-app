@@ -54,7 +54,7 @@ export const getLugaresCerca = async (position: GeoPoint, includedTypes: string[
 
         if (response.status === 200) {
             const data = await response.json();
-            if (data.places.length === 0) return [];
+            if (data.places?.length === 0) return [];
 
             return data.places as Lugar[];
         }
