@@ -1,7 +1,9 @@
 import { View } from "react-native";
-import { Text } from "react-native-paper";
+import { Button, Text } from "react-native-paper";
+import { useSurvey } from "../../context";
 
 export default function InitSurvey() {
+    const { setStep } = useSurvey();
     return (
         <View style={{
             height: '100%',
@@ -10,7 +12,11 @@ export default function InitSurvey() {
             gap: 40
         }}>
             <Text variant='headlineLarge' style={{ fontWeight: "bold" }}>Cuéntanos un poco de tu negocio</Text>
-            Siguiente
+            <Button
+                onPress={() => setStep("questions")}
+            >
+                Continuar
+            </Button>
         </View>
     );
 }

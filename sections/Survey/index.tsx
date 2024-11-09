@@ -35,7 +35,6 @@ export const getRadioButtonColor = (value: number) => {
 };
 
 export default function Survey() {
-  const [quizProgrees, setQuizProgress] = useState(0); // calcular en base a item seleccionado
   const [page, setPage] = useState(0);
   const totalQuestions = DAILY_SURVEY_QUESTIONS.length;
   const totalPages = Math.ceil(totalQuestions / 2);
@@ -65,6 +64,10 @@ export default function Survey() {
 
   function handleSubmit(data: SurveySchemaType) {
     console.log("Form data", data);
+    if (progress !== 1){
+      return; 
+    }
+    setStep("results");
   }
   
   return (
