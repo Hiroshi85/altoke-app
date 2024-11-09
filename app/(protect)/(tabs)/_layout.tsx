@@ -45,9 +45,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="apoyo"
+        name="ayuda"
         options={{
-          title: 'Apoyo',
+          title: 'Ayuda',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'help' : 'help-outline'} color={color} />
           ),

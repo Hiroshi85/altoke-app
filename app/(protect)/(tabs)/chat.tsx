@@ -107,7 +107,7 @@ export default function TabTwoScreen() {
     <Card
       style={[styles.messageCard, item.isUser ? styles.userMessage : styles.botMessage]}
     >
-      <Markdown>{item.text}</Markdown>
+      <Markdown style={{body: {color: "white"}}}>{item.text}</Markdown>
     </Card>
   );
 
@@ -180,11 +180,11 @@ const styles = StyleSheet.create({
   userMessage: {
     color: 'white',
     alignSelf: 'flex-end',
-    backgroundColor: '#6200ee',
+    backgroundColor: '#6200bb',
   },
   botMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#03dac5',
+    backgroundColor: '#030333',
   },
 });
 
