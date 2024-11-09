@@ -5,6 +5,7 @@ import { Fragment } from "react";
 import { Tabs } from "expo-router";
 import { ThemedText } from "@/components/ThemedText";
 import ProductivityLineChart from "@/sections/Home/_partials/productivity-line-chart";
+import DashboardDiario from "@/sections/Home/dashboard";
 
 export default function HomeScreen() {
   return (
@@ -14,13 +15,8 @@ export default function HomeScreen() {
           title: APP_NAME,
         }}
       />
-      <ThemedText style={{
-        position: "absolute",
-        margin: "auto"
-      }}>
-        Dashboard
-      </ThemedText>
-      <ProductivityLineChart />
+      
+      <DashboardDiario />
 
     </Fragment>
   );
