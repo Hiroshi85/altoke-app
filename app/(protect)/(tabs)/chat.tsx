@@ -1,6 +1,6 @@
 import { StyleSheet, Image, Platform, View, FlatList } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
-import { Appbar, Button, Card, Text, TextInput } from 'react-native-paper';
+import { Appbar, Button, Card, Paragraph, Text, TextInput, useTheme } from 'react-native-paper';
 import { model, quitarEstiloMarkdown } from '@/utils/gemini';
 import Markdown from 'react-native-markdown-display';
 
@@ -47,7 +47,8 @@ export default function TabTwoScreen() {
         // Enviar el mensaje y recibir la recomendación inicial
         const result = await initialChat.sendMessage("");
         const response = result.response;
-        const recommendation = quitarEstiloMarkdown(response.text());
+        // const recommendation = quitarEstiloMarkdown(response.text());
+        const recommendation = response.text();
 
         // Añadir la respuesta del modelo como el primer mensaje
         const botMessage: Message = { id: 1, text: recommendation, isUser: false };
@@ -60,7 +61,7 @@ export default function TabTwoScreen() {
       }
     };
 
-    if(!chat) initializeChat();
+    if (!chat) initializeChat();
   }, []);
 
   const sendMessage = async () => {
@@ -95,6 +96,7 @@ export default function TabTwoScreen() {
       }
     }
   };
+  const { colors } = useTheme();
 
   // Scroll al final cada vez que los mensajes cambian
   useEffect(() => {
@@ -103,13 +105,47 @@ export default function TabTwoScreen() {
     }
   }, [messages]);
 
-  const renderMessage = ({ item }: { item: Message }) => (
-    <Card
-      style={[styles.messageCard, item.isUser ? styles.userMessage : styles.botMessage]}
-    >
-      <Markdown style={{body: {color: "white"}}}>{item.text}</Markdown>
-    </Card>
-  );
+  const renderMessage = ({ item }: { item: Message }) => {
+    if (item.isUser) {
+      return (
+        <View style={{
+          flexDirection: 'row', justifyContent: 'flex-end',
+          maxWidth: "80%", alignSelf: 'flex-end',
+          padding: 10,
+          borderRadius: 10,
+          backgroundColor: "#e0e0e0",
+          elevation: 2,
+        }}>
+          <Text>{item.text}</Text>
+        </View>
+      );
+    }
+
+    return (
+      <View style={{
+        flexDirection: "row",
+        gap: 5
+
+      }}>
+        <View style={{
+          width: 20,
+          height: 20,
+          borderRadius: 1000,
+          backgroundColor: colors.primary,
+
+        }}></View>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', maxWidth: "80%" }}>
+          <Markdown style={{
+            body: {
+              marginTop: -10,
+              padding: 0,
+
+            },
+          }}>{item.text}</Markdown>
+        </View>
+      </View>
+    )
+  }
 
   return (
     <View style={styles.container}>
