@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/forms';
 import { useRegister } from './context';
 import { useEffect, useState } from 'react';
+import { externalApis } from '@/settings/extenal';
 
 
 type Suggestion = {
@@ -18,7 +19,7 @@ type Suggestion = {
     };
   };
 
-const GOOGLE_PLACES_API_KEY = 'AIzaSyBst37YpS00brfg_9-MSaGLIqtMFHq8RvA';
+const GOOGLE_PLACES_API_KEY = externalApis.mapsApiKey;
 
 export default function InitRegister() {
 
